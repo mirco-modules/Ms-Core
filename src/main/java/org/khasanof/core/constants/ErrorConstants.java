@@ -1,4 +1,4 @@
-package org.khasanof.core;
+package org.khasanof.core.constants;
 
 import java.net.URI;
 
