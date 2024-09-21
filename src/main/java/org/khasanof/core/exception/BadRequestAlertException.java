@@ -1,6 +1,7 @@
 package org.khasanof.core.exception;
 
 import org.khasanof.core.constants.ErrorConstants;
+import org.khasanof.core.error.BasicError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponseException;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
@@ -17,8 +18,26 @@ public class BadRequestAlertException extends ErrorResponseException {
 
     private final String errorKey;
 
+    public BadRequestAlertException(BasicError basicError) {
+        this(basicError.getMessage(), basicError.getEntityName(), basicError.getErrorKey());
+    }
+
     public BadRequestAlertException(String defaultMessage, String entityName, String errorKey) {
-        this(ErrorConstants.DEFAULT_TYPE, defaultMessage, entityName, errorKey);
+        super(HttpStatus.BAD_REQUEST,
+                ProblemDetailWithCauseBuilder
+                        .instance()
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                        .withType(ErrorConstants.DEFAULT_TYPE)
+                        .withTitle(defaultMessage)
+                        .withProperty(ErrorConstants.DEFAULT_MESSAGE, defaultMessage)
+                        .withProperty(ErrorConstants.ERROR_KEY, errorKey)
+                        .withProperty("message", "error." + errorKey)
+                        .withProperty("params", entityName)
+                        .build(),
+                null
+        );
+        this.entityName = entityName;
+        this.errorKey = errorKey;
     }
 
     public BadRequestAlertException(URI type, String defaultMessage, String entityName, String errorKey) {
