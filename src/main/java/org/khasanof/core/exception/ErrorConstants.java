@@ -12,5 +12,8 @@ public final class ErrorConstants {
     public static final String DEFAULT_MESSAGE = "default.message";
     public static final String ERROR_KEY = "error.key";
 
+    public static final String MESSAGE = "message";
+    public static final String ENTITY_NAME = "entityName";
+
     private ErrorConstants() {}
 }

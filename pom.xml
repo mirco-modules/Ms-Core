@@ -12,8 +12,8 @@
     </parent>
 
     <groupId>org.khasanof</groupId>
-    <artifactId>modules-core</artifactId>
-    <version>1.0.0</version>
+    <artifactId>mm-core</artifactId>
+    <version>1.1.0</version>
 
     <developers>
         <developer>
