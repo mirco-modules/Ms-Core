@@ -1,7 +1,8 @@
 package org.khasanof.core.tenancy.multi.resolver.datasource;
 
-import org.khasanof.core.tenancy.core.model.SDataSource;
+import org.khasanof.core.tenancy.core.model.TenantDataSource;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 /**
@@ -16,7 +17,7 @@ public interface DataSourceResolver {
      * @param tenantIdentifier
      * @return
      */
-    SDataSource getOrCreate(Long tenantIdentifier);
+    TenantDataSource getOrCreate(Long tenantIdentifier);
 
     /**
      *
@@ -29,5 +30,11 @@ public interface DataSourceResolver {
      *
      * @return
      */
-    Map<Long, SDataSource> getAllDataSources();
+    Map<Long, TenantDataSource> getDataSources();
+
+    /**
+     *
+     * @return
+     */
+    Map<Long, DataSource> getResolvedDataSources();
 }

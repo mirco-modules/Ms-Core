@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy.single
  * @since 11/2/2024 3:14 PM
  */
 @Configuration

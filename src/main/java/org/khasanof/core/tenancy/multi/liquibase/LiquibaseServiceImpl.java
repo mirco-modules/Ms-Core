@@ -9,7 +9,8 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.khasanof.core.tenancy.core.model.SDataSource;
+import org.khasanof.core.tenancy.core.model.TenantDataSource;
+import org.khasanof.core.tenancy.multi.liquibase.resolver.LiquibaseChangelogResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
 
 import javax.sql.DataSource;
@@ -26,12 +27,12 @@ public class LiquibaseServiceImpl implements LiquibaseService {
 
     public static final String DEFAULT_SCHEMA_NAME = "public";
 
-    private final String changeLogPath;
     private final DataSourceResolver dataSourceResolver;
+    private final LiquibaseChangelogResolver liquibaseChangelogResolver;
 
-    public LiquibaseServiceImpl(String changeLogPath, DataSourceResolver dataSourceResolver) {
+    public LiquibaseServiceImpl(DataSourceResolver dataSourceResolver, LiquibaseChangelogResolver liquibaseChangelogResolver) {
         this.dataSourceResolver = dataSourceResolver;
-        this.changeLogPath = changeLogPath;
+        this.liquibaseChangelogResolver = liquibaseChangelogResolver;
     }
 
     /**
@@ -39,15 +40,15 @@ public class LiquibaseServiceImpl implements LiquibaseService {
      */
     @Override
     public void allTenantsMigrations() {
-        Map<Long, SDataSource> allDataSources = dataSourceResolver.getAllDataSources();
-        allDataSources.keySet().forEach(this::singleTenantMigration);
+        Map<Long, TenantDataSource> allDataSources = dataSourceResolver.getDataSources();
+        allDataSources.keySet().forEach(this::migrate);
     }
 
     /**
      * @param tenantIdentifier
      */
     @Override
-    public void singleTenantMigration(Long tenantIdentifier) {
+    public void migrate(Long tenantIdentifier) {
         tryExecuteLiquibaseMigration(tenantIdentifier);
     }
 
@@ -70,7 +71,7 @@ public class LiquibaseServiceImpl implements LiquibaseService {
      * @throws SQLException
      */
     private Liquibase getLiquibase(Long tenantIdentifier) throws DatabaseException, SQLException {
-        return new Liquibase(changeLogPath, new ClassLoaderResourceAccessor(), getDatabase(tenantIdentifier));
+        return new Liquibase(liquibaseChangelogResolver.getChangelog(), new ClassLoaderResourceAccessor(), getDatabase(tenantIdentifier));
     }
 
     /**
@@ -96,8 +97,8 @@ public class LiquibaseServiceImpl implements LiquibaseService {
      * @throws SQLException
      */
     private Connection getConnection(Long tenantIdentifier) throws SQLException {
-        SDataSource sDataSource = dataSourceResolver.getOrCreate(tenantIdentifier);
-        DataSource dataSource = sDataSource.getDataSource();
+        TenantDataSource tenantDataSource = dataSourceResolver.getOrCreate(tenantIdentifier);
+        DataSource dataSource = tenantDataSource.getDataSource();
         return dataSource.getConnection();
     }
 }

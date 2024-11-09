@@ -5,10 +5,10 @@ import org.khasanof.core.enumeration.TenancyType;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy
  * @since 11/2/2024 1:08 PM
  */
-public interface TenancyConfiguration {
+public interface TenancyConfigurer {
 
     /**
      *

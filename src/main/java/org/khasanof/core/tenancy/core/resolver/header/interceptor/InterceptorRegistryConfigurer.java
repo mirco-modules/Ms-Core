@@ -1,15 +1,14 @@
-package org.khasanof.core.tenancy.single.config;
+package org.khasanof.core.tenancy.core.resolver.header.interceptor;
 
-import org.khasanof.core.tenancy.core.resolver.header.interceptor.TenantIdentifierInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy
  * @since 11/2/2024 2:21 PM
  */
-public class InterceptorRegistryConfiguration implements WebMvcConfigurer {
+public class InterceptorRegistryConfigurer implements WebMvcConfigurer {
 
     /**
      *

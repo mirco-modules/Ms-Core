@@ -14,8 +14,15 @@ import javax.sql.DataSource;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SDataSource {
+public class TenantDataSource {
 
-    private Boolean isMigrated;
+    private Boolean migrated;
     private DataSource dataSource;
+
+    /**
+     *
+     */
+    public void changeMigratedState() {
+        migrated = Boolean.TRUE;
+    }
 }
