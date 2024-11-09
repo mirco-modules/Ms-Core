@@ -19,5 +19,5 @@ import org.springframework.context.annotation.FilterType;
                 classes = {AutoConfigurationExcludeFilter.class}
         )}
 )
-public class ModulesCoreAutoConfiguration {
+public class MsCoreAutoConfiguration {
 }
