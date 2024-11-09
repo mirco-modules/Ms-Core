@@ -12,11 +12,15 @@ import jakarta.persistence.criteria.Root;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
@@ -201,6 +205,24 @@ public final class TestUtil {
         CriteriaQuery<T> all = cq.select(rootEntry);
         TypedQuery<T> allQuery = em.createQuery(all);
         return allQuery.getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T createUpdateProxyForBean(T update, T original) {
+        Enhancer e = new Enhancer();
+        e.setSuperclass(original.getClass());
+        e.setCallback(
+                new MethodInterceptor() {
+                    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+                        Object val = update.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(update, args);
+                        if (val == null) {
+                            return original.getClass().getMethod(method.getName(), method.getParameterTypes()).invoke(original, args);
+                        }
+                        return val;
+                    }
+                }
+        );
+        return (T) e.create();
     }
 
     private TestUtil() {}

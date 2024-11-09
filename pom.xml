@@ -14,6 +14,7 @@
     <groupId>org.khasanof</groupId>
     <artifactId>ms-core</artifactId>
     <version>1.2.0</version>
+    <name>Ms Core</name>
 
     <developers>
         <developer>
