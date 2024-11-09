@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy.single.domain
  * @since 11/2/2024 1:16 PM
  */
 @Setter
@@ -32,6 +32,6 @@ public abstract class AbstractTenantEntity implements Serializable {
      */
     @PrePersist
     public void setTenantId() {
-        this.tenantId = TenantContext.getCurrentTenant();
+        this.tenantId = TenantContext.getCurrentTenantId();
     }
 }

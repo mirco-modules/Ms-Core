@@ -1,36 +1,28 @@
 package org.khasanof.core.tenancy.multi;
 
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.khasanof.core.tenancy.multi.condition.MultiTenantCondition;
 import org.khasanof.core.tenancy.multi.database.CreateDatabaseService;
 import org.khasanof.core.tenancy.multi.database.CreateDatabaseServiceImpl;
 import org.khasanof.core.tenancy.multi.helper.DatabaseNameHelper;
 import org.khasanof.core.tenancy.multi.liquibase.LiquibaseService;
 import org.khasanof.core.tenancy.multi.liquibase.LiquibaseServiceImpl;
+import org.khasanof.core.tenancy.multi.liquibase.resolver.LiquibaseChangelogResolver;
+import org.khasanof.core.tenancy.multi.liquibase.resolver.LiquibaseChangelogResolverImpl;
 import org.khasanof.core.tenancy.multi.manager.DataSourceManager;
 import org.khasanof.core.tenancy.multi.manager.DataSourceManagerImpl;
-import org.khasanof.core.tenancy.multi.provider.MultiTenantConnectorProviderImpl;
 import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolverImpl;
-import org.khasanof.core.tenancy.multi.resolver.datasource.MultiTenantDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 /**
  * @author Nurislom
@@ -42,46 +34,34 @@ import java.util.Map;
 public class MultiTenantDatabaseConfiguration {
 
     @Autowired
-    private Environment environment;
-
-    @Autowired
-    private JpaProperties jpaProperties;
-
-    @Autowired
     private DataSourceProperties dataSourceProperties;
 
     @Autowired
     private DatabaseNameHelper databaseNameHelper;
 
-    private static final String CHANGE_LOG_PATH = "config/liquibase/master.xml";
-
+    /**
+     *
+     * @return
+     */
     @Bean
     public DataSource dataSource() {
+        return new LazyConnectionDataSourceProxy(multitenantDataSource());
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Bean
+    public DataSource multitenantDataSource() {
         DataSourceManager dataSourceManager = dataSourceManager();
-        AbstractRoutingDataSource dataSource = new MultiTenantDataSource(dataSourceManager, tenantIdentifierResolver());
-        dataSource.setDefaultTargetDataSource(defaultDataSource());
-        dataSource.setTargetDataSources(dataSourceManager.getTargetDataSource());
-        dataSource.afterPropertiesSet();
-        return dataSource;
-    }
 
-    @Bean
-    public JpaVendorAdapter jpaVendorAdapter() {
-        return new HibernateJpaVendorAdapter();
-    }
+        var multiTenantDataSource = new MultiTenantDataSource(defaultDataSource(), dataSourceManager, tenantIdentifierResolver());
+        multiTenantDataSource.setDefaultTargetDataSource(defaultDataSource());
+        multiTenantDataSource.setTargetDataSources(Collections.emptyMap());
+        multiTenantDataSource.afterPropertiesSet();
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
-        Map<String, Object> jpaPropertiesMap = new HashMap<>(jpaProperties.getProperties());
-        jpaPropertiesMap.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider());
-        jpaPropertiesMap.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, tenantIdentifierResolver());
-
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
-        em.setPackagesToScan("org.khasanof.*");
-        em.setJpaVendorAdapter(this.jpaVendorAdapter());
-        em.setJpaPropertyMap(jpaPropertiesMap);
-        return em;
+        return multiTenantDataSource;
     }
 
     /**
@@ -93,15 +73,22 @@ public class MultiTenantDatabaseConfiguration {
         return new CreateDatabaseServiceImpl(defaultDataSource());
     }
 
+    /**
+     *
+     * @return
+     */
     @Bean
     public DataSourceManager dataSourceManager() {
         return new DataSourceManagerImpl(liquibaseService(), dataSourceResolver(), databaseNameHelper, createDatabaseService());
     }
 
+    /**
+     *
+     * @return
+     */
     @Bean
-
     public LiquibaseService liquibaseService() {
-        return new LiquibaseServiceImpl(CHANGE_LOG_PATH, dataSourceResolver());
+        return new LiquibaseServiceImpl(dataSourceResolver(), liquibaseChangelogResolver());
     }
 
     /**
@@ -124,19 +111,18 @@ public class MultiTenantDatabaseConfiguration {
 
     /**
      *
-     * @return
+     * @return {@link DataSource}
      */
-    @Bean
-    public MultiTenantConnectionProvider<Long> multiTenantConnectionProvider() {
-        return new MultiTenantConnectorProviderImpl(dataSource());
+    DataSource defaultDataSource() {
+        DataSourceBuilder<?> dataSourceBuilder = dataSourceProperties.initializeDataSourceBuilder();
+        return dataSourceBuilder.build();
     }
 
     /**
      *
-     * @return {@link DataSource}
+     * @return
      */
-    public DataSource defaultDataSource() {
-        DataSourceBuilder<?> dataSourceBuilder = dataSourceProperties.initializeDataSourceBuilder();
-        return dataSourceBuilder.build();
+    LiquibaseChangelogResolver liquibaseChangelogResolver() {
+        return new LiquibaseChangelogResolverImpl();
     }
 }

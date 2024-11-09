@@ -1,5 +1,6 @@
-package org.khasanof.core.tenancy.multi.resolver.datasource;
+package org.khasanof.core.tenancy.multi;
 
+import org.khasanof.core.enumeration.RepositoryType;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.khasanof.core.tenancy.multi.manager.DataSourceManager;
 import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
@@ -7,6 +8,9 @@ import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
+
+import static org.khasanof.core.tenancy.core.TenantContext.getCurrentTenantRepositoryType;
 
 /**
  * @author Nurislom
@@ -15,10 +19,12 @@ import java.sql.SQLException;
  */
 public class MultiTenantDataSource extends AbstractRoutingDataSource {
 
+    private final DataSource defaultDataSource;
     private final DataSourceManager dataSourceManager;
     private final TenantIdentifierResolver tenantIdentifierResolver;
 
-    public MultiTenantDataSource(DataSourceManager dataSourceManager, TenantIdentifierResolver tenantIdentifierResolver) {
+    public MultiTenantDataSource(DataSource defaultDataSource, DataSourceManager dataSourceManager, TenantIdentifierResolver tenantIdentifierResolver) {
+        this.defaultDataSource = defaultDataSource;
         this.dataSourceManager = dataSourceManager;
         this.tenantIdentifierResolver = tenantIdentifierResolver;
     }
@@ -37,6 +43,18 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
      */
     @Override
     public Connection getConnection() throws SQLException {
+        if (Objects.equals(getCurrentTenantRepositoryType(), RepositoryType.DEFAULT)) {
+            return defaultDataSource.getConnection();
+        }
+        return getMultitenanyConnection();
+    }
+
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
+    private Connection getMultitenanyConnection() throws SQLException {
         var dataSource = getCurrentTenantDataSource();
         return dataSource.getConnection();
     }

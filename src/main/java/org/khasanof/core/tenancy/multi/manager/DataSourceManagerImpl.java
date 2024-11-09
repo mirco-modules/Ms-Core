@@ -1,17 +1,14 @@
 package org.khasanof.core.tenancy.multi.manager;
 
-import org.khasanof.core.tenancy.core.model.SDataSource;
+import org.khasanof.core.tenancy.core.model.TenantDataSource;
 import org.khasanof.core.tenancy.multi.database.CreateDatabaseService;
 import org.khasanof.core.tenancy.multi.helper.DatabaseNameHelper;
 import org.khasanof.core.tenancy.multi.liquibase.LiquibaseService;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
 
 import javax.sql.DataSource;
-import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author Nurislom
@@ -19,8 +16,6 @@ import java.util.stream.Collectors;
  * @since 11/2/2024 6:30 PM
  */
 public class DataSourceManagerImpl implements DataSourceManager {
-
-    private final Map<Object, Object> targetDataSources = new HashMap<>();
 
     private final LiquibaseService liquibaseService;
     private final DataSourceResolver dataSourceResolver;
@@ -45,18 +40,33 @@ public class DataSourceManagerImpl implements DataSourceManager {
      */
     @Override
     public DataSource getOrCreate(Long tenantIdentifier) {
-        SDataSource sDataSource = dataSourceResolver.getOrCreate(tenantIdentifier);
-        if (Objects.equals(sDataSource.getIsMigrated(), Boolean.TRUE)) {
-            return sDataSource.getDataSource();
+        var tenantDataSource = dataSourceResolver.getOrCreate(tenantIdentifier);
+        if (Objects.equals(tenantDataSource.getMigrated(), Boolean.TRUE)) {
+            return tenantDataSource.getDataSource();
         }
 
-        sDataSource.setIsMigrated(true);
-        DataSource dataSource = sDataSource.getDataSource();
-        targetDataSources.put(tenantIdentifier, dataSource);
+        startMigration(tenantIdentifier, tenantDataSource);
+        return tenantDataSource.getDataSource();
+    }
 
+    /**
+     *
+     * @param tenantIdentifier
+     * @param tenantDataSource
+     */
+    private void startMigration(Long tenantIdentifier, TenantDataSource tenantDataSource) {
+        tenantDataSource.changeMigratedState();
         createDatabase(tenantIdentifier);
-        liquibaseService.singleTenantMigration(tenantIdentifier);
-        return dataSource;
+        liquibaseService.migrate(tenantIdentifier);
+    }
+
+    /**
+     *
+     * @param tenantIdentifier
+     */
+    private void createDatabase(Long tenantIdentifier) {
+        var databaseName = databaseNameHelper.getDatabaseName(tenantIdentifier);
+        createDatabaseService.create(databaseName);
     }
 
     /**
@@ -68,11 +78,6 @@ public class DataSourceManagerImpl implements DataSourceManager {
     public DataSource get(Long tenantIdentifier) {
         var dataSource = dataSourceResolver.getOrCreate(tenantIdentifier);
         return dataSource.getDataSource();
-    }
-
-    private void createDatabase(Long tenantIdentifier) {
-        String databaseName = databaseNameHelper.getDatabaseName(tenantIdentifier);
-        createDatabaseService.create(databaseName);
     }
 
     /**
@@ -91,18 +96,6 @@ public class DataSourceManagerImpl implements DataSourceManager {
      */
     @Override
     public Map<Long, DataSource> getAllDataSources() {
-        return dataSourceResolver.getAllDataSources().entrySet()
-                .stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().getDataSource()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public Map<Object, Object> getTargetDataSource() {
-        return this.targetDataSources;
+        return dataSourceResolver.getResolvedDataSources();
     }
 }

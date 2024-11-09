@@ -16,5 +16,5 @@ public interface LiquibaseService {
      *
      * @param tenantIdentifier
      */
-    void singleTenantMigration(Long tenantIdentifier);
+    void migrate(Long tenantIdentifier);
 }

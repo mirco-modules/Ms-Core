@@ -16,7 +16,7 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
      */
     @Override
     public Long resolveCurrentTenantIdentifier() {
-        return TenantContext.getCurrentTenant();
+        return TenantContext.getCurrentTenantId();
     }
 
     /**

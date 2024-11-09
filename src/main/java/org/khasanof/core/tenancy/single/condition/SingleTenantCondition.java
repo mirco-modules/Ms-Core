@@ -1,20 +1,21 @@
 package org.khasanof.core.tenancy.single.condition;
 
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.stereotype.Component;
+import org.khasanof.core.enumeration.TenancyType;
+import org.khasanof.core.tenancy.core.condition.AbstractTenantCondition;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy.single.condition
  * @since 11/2/2024 3:21 PM
  */
-@Component
-public class SingleTenantCondition implements Condition {
+public class SingleTenantCondition extends AbstractTenantCondition {
 
+    /**
+     *
+     * @return
+     */
     @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        return false;
+    public TenancyType getTenancyType() {
+        return TenancyType.SINGLE;
     }
 }

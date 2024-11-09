@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy.single.interceptor
  * @since 11/2/2024 2:43 PM
  */
 public class HibernateSessionInterceptor {
@@ -22,6 +22,6 @@ public class HibernateSessionInterceptor {
     public void applyTenantFilter() {
         Session session = entityManager.unwrap(Session.class);
         session.enableFilter("tenantFilter")
-                .setParameter("tenantId", TenantContext.getCurrentTenant());
+                .setParameter("tenantId", TenantContext.getCurrentTenantId());
     }
 }

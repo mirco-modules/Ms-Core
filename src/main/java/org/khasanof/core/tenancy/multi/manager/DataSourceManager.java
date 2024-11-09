@@ -36,10 +36,4 @@ public interface DataSourceManager {
      * @return
      */
     Map<Long, DataSource> getAllDataSources();
-
-    /**
-     *
-     * @return
-     */
-    Map<Object, Object> getTargetDataSource();
 }
