@@ -1,6 +1,6 @@
 package org.khasanof.core.tenancy.core;
 
-import org.khasanof.core.enumeration.RepositoryType;
+import org.khasanof.core.domain.enumeration.RepositoryType;
 import org.khasanof.core.tenancy.core.model.Tenant;
 
 import java.util.Objects;

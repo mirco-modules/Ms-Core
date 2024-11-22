@@ -1,7 +1,7 @@
 package org.khasanof.core.tenancy.core.model;
 
 import lombok.*;
-import org.khasanof.core.enumeration.RepositoryType;
+import org.khasanof.core.domain.enumeration.RepositoryType;
 
 /**
  * @author Nurislom

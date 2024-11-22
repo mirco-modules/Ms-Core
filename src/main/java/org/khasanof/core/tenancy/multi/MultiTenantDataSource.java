@@ -1,6 +1,6 @@
 package org.khasanof.core.tenancy.multi;
 
-import org.khasanof.core.enumeration.RepositoryType;
+import org.khasanof.core.domain.enumeration.RepositoryType;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.khasanof.core.tenancy.multi.manager.DataSourceManager;
 import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
