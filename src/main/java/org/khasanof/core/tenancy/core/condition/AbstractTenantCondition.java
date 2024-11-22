@@ -1,7 +1,7 @@
 package org.khasanof.core.tenancy.core.condition;
 
 import lombok.extern.slf4j.Slf4j;
-import org.khasanof.core.enumeration.TenancyType;
+import org.khasanof.core.domain.enumeration.TenancyType;
 import org.khasanof.core.tenancy.core.AbstractTenancyConfigurer;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

@@ -1,7 +1,7 @@
 package org.khasanof.core.tenancy;
 
-import org.khasanof.core.enumeration.TenancyResolverType;
-import org.khasanof.core.enumeration.TenancyType;
+import org.khasanof.core.domain.enumeration.TenancyResolverType;
+import org.khasanof.core.domain.enumeration.TenancyType;
 
 /**
  * @author Nurislom

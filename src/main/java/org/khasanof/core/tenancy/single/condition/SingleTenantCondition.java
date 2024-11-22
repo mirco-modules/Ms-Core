@@ -1,6 +1,6 @@
 package org.khasanof.core.tenancy.single.condition;
 
-import org.khasanof.core.enumeration.TenancyType;
+import org.khasanof.core.domain.enumeration.TenancyType;
 import org.khasanof.core.tenancy.core.condition.AbstractTenantCondition;
 
 /**

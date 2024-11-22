@@ -1,4 +1,4 @@
-package org.khasanof.core.enumeration;
+package org.khasanof.core.domain.enumeration;
 
 /**
  * @author Nurislom

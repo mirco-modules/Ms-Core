@@ -1,0 +1,1 @@
+# Auto create database configuration example
