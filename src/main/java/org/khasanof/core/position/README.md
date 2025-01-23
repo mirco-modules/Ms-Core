@@ -1,0 +1,1 @@
+# Microservice instance position configuration example

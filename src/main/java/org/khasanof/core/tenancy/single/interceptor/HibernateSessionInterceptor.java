@@ -2,8 +2,8 @@ package org.khasanof.core.tenancy.single.interceptor;
 
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
-import org.khasanof.core.tenancy.core.TenantContext;
 import org.springframework.transaction.annotation.Transactional;
+import org.khasanof.core.tenancy.core.TenantContext;
 
 /**
  * @author Nurislom

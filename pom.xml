@@ -13,7 +13,7 @@
 
     <groupId>org.khasanof</groupId>
     <artifactId>ms-core</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
     <name>Ms Core</name>
 
     <developers>
@@ -34,6 +34,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <poiji.version>4.1.1</poiji.version>
         <spring-boot.version>3.1.2</spring-boot.version>
         <jaxb-runtime.version>4.0.4</jaxb-runtime.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -68,6 +69,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
         <dependency>
@@ -87,6 +92,10 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
@@ -100,12 +109,17 @@
             <version>${jhipster-framework.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ozlerhakan</groupId>
+            <artifactId>poiji</artifactId>
+            <version>${poiji.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>

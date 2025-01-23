@@ -1,6 +1,7 @@
 package org.khasanof.core.result;
 
-import org.khasanof.core.error.ErrorKey;
+
+import org.khasanof.core.errors.ErrorKey;
 
 /**
  * @author Nurislom
