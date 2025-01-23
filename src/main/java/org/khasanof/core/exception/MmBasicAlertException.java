@@ -1,6 +1,6 @@
 package org.khasanof.core.exception;
 
-import org.khasanof.core.error.BasicError;
+import org.khasanof.core.errors.BasicError;
 import org.springframework.web.ErrorResponseException;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
 
@@ -22,10 +22,10 @@ public class MmBasicAlertException extends ErrorResponseException {
 
     public MmBasicAlertException(BasicError basicError) {
         super(
-                basicError.getHttpStatus(),
+                basicError.httpStatus(),
                 ProblemDetailWithCause.ProblemDetailWithCauseBuilder
                         .instance()
-                        .withStatus(basicError.getHttpStatus().value())
+                        .withStatus(basicError.httpStatus().value())
                         .withTitle(basicError.getMessage())
                         .withProperty(ErrorConstants.MESSAGE, basicError.getMessage())
                         .withProperty(ErrorConstants.ERROR_KEY, basicError.getErrorKey())

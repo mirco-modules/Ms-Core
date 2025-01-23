@@ -1,7 +1,7 @@
 package org.khasanof.core.exception;
 
 import org.khasanof.core.constants.ErrorConstants;
-import org.khasanof.core.error.BasicError;
+import org.khasanof.core.errors.BasicError;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponseException;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
