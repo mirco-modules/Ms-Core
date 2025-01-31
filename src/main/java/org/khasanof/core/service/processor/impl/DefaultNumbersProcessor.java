@@ -1,22 +1,21 @@
 package org.khasanof.core.service.processor.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.core.type.filter.AssignableTypeFilter;
-import org.springframework.stereotype.Component;
 import org.khasanof.core.constants.NumberProcessorConstants;
 import org.khasanof.core.domain.DbTypes;
 import org.khasanof.core.domain.Numbers;
 import org.khasanof.core.domain.types.ICodeable;
 import org.khasanof.core.repository.DbTypesRepository;
 import org.khasanof.core.repository.NumbersRepository;
+import org.khasanof.core.service.HQLExecutorService;
 import org.khasanof.core.service.processor.RootProcessor;
 import org.khasanof.core.service.scanner.DynamicClassScanningComponentProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static org.khasanof.core.constants.NumberProcessorConstants.CODE_FIELD;
+import static org.khasanof.core.constants.NumberProcessorConstants.*;
 import static org.khasanof.core.util.ExtractClassNameUtil.extractClassName;
 
 /**
@@ -25,24 +24,23 @@ import static org.khasanof.core.util.ExtractClassNameUtil.extractClassName;
  * @since 12/11/2024 2:21 PM
  */
 @Component
-@SuppressWarnings("unchecked")
 public class DefaultNumbersProcessor implements RootProcessor {
 
     private static final Long DEFAULT_NEXT_NUMBER = 1L;
 
-    private final EntityManager em;
     private final NumbersRepository numbersRepository;
     private final DbTypesRepository dbTypesRepository;
+    private final HQLExecutorService hqlExecutorService;
     private final DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider;
 
-    public DefaultNumbersProcessor(EntityManager em,
-                                   NumbersRepository numbersRepository,
+    public DefaultNumbersProcessor(NumbersRepository numbersRepository,
                                    DbTypesRepository dbTypesRepository,
+                                   HQLExecutorService hqlExecutorService,
                                    DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider) {
 
-        this.em = em;
         this.numbersRepository = numbersRepository;
         this.dbTypesRepository = dbTypesRepository;
+        this.hqlExecutorService = hqlExecutorService;
         this.dynamicClassScanningComponentProvider = dynamicClassScanningComponentProvider;
     }
 
@@ -85,7 +83,7 @@ public class DefaultNumbersProcessor implements RootProcessor {
      * @return
      */
     private Long getNextNumber(DbTypes dbType) {
-        Long count = executeQuery(NumberProcessorConstants.GET_ENTITY_COUNT, dbType.getName());
+        Long count = hqlExecutorService.executeQuery(GET_ENTITY_COUNT, dbType.getName());
         return count <= 0 ? DEFAULT_NEXT_NUMBER : getEntityMaxCode(dbType);
     }
 
@@ -95,7 +93,7 @@ public class DefaultNumbersProcessor implements RootProcessor {
      * @return
      */
     private Long getEntityMaxCode(DbTypes dbType) {
-        Integer maxCode = executeQuery(NumberProcessorConstants.GET_MAX_CODE_QUERY, CODE_FIELD, dbType.getName());
+        Integer maxCode = hqlExecutorService.executeQuery(GET_MAX_CODE_QUERY, CODE_FIELD, dbType.getName());
         return maxCode.longValue() + 1;
     }
 
@@ -109,18 +107,6 @@ public class DefaultNumbersProcessor implements RootProcessor {
         numbers.setNextNumber(nextNumber);
         numbers.setDbType(dbTypes);
         return numbers;
-    }
-
-    /**
-     *
-     * @param hql
-     * @param params
-     * @return
-     */
-    private <T> T executeQuery(String hql, Object... params) {
-        String formattedHql = String.format(hql, params);
-        Query query = em.createQuery(formattedHql);
-        return (T) query.getSingleResult();
     }
 
     /**

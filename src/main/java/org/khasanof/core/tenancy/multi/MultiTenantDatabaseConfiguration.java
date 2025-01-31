@@ -1,5 +1,13 @@
 package org.khasanof.core.tenancy.multi;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+import org.khasanof.core.migration.core.database.DatabaseCreatorService;
 import org.khasanof.core.tenancy.multi.condition.MultiTenantCondition;
 import org.khasanof.core.tenancy.multi.database.CreateDatabaseService;
 import org.khasanof.core.tenancy.multi.database.CreateDatabaseServiceImpl;
@@ -13,20 +21,15 @@ import org.khasanof.core.tenancy.multi.manager.DataSourceManagerImpl;
 import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolverImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+import org.khasanof.core.tenancy.multi.resolver.datasource.url.DataSourceUrlResolver;
+import org.khasanof.core.tenancy.multi.resolver.datasource.url.DefaultDataSourceUrlResolver;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
+ * @see org.khasanof.core.tenancy.multi
  * @since 11/2/2024 3:27 PM
  */
 @Configuration
@@ -38,6 +41,9 @@ public class MultiTenantDatabaseConfiguration {
 
     @Autowired
     private DatabaseNameHelper databaseNameHelper;
+
+    @Autowired
+    private DatabaseCreatorService databaseCreatorService;
 
     /**
      *
@@ -79,7 +85,7 @@ public class MultiTenantDatabaseConfiguration {
      */
     @Bean
     public DataSourceManager dataSourceManager() {
-        return new DataSourceManagerImpl(liquibaseService(), dataSourceResolver(), databaseNameHelper, createDatabaseService());
+        return new DataSourceManagerImpl(liquibaseService(), dataSourceResolver(), dataSourceProperties, dataSourceUrlResolver(), databaseCreatorService);
     }
 
     /**
@@ -106,7 +112,16 @@ public class MultiTenantDatabaseConfiguration {
      */
     @Bean
     public DataSourceResolver dataSourceResolver() {
-        return new DataSourceResolverImpl(databaseNameHelper, dataSourceProperties);
+        return new DataSourceResolverImpl(dataSourceProperties, dataSourceUrlResolver());
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Bean
+    public DataSourceUrlResolver dataSourceUrlResolver() {
+        return new DefaultDataSourceUrlResolver(databaseNameHelper, dataSourceProperties);
     }
 
     /**

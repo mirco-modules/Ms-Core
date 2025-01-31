@@ -5,7 +5,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core.tenancy
+ * @see org.khasanof.core.tenancy.core.resolver.header.interceptor
  * @since 11/2/2024 2:21 PM
  */
 public class InterceptorRegistryConfigurer implements WebMvcConfigurer {

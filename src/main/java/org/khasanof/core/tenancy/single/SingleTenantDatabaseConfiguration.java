@@ -1,11 +1,11 @@
 package org.khasanof.core.tenancy.single;
 
 import jakarta.persistence.EntityManager;
-import org.khasanof.core.tenancy.single.condition.SingleTenantCondition;
-import org.khasanof.core.tenancy.single.interceptor.HibernateSessionInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.khasanof.core.tenancy.single.condition.SingleTenantCondition;
+import org.khasanof.core.tenancy.single.interceptor.HibernateSessionInterceptor;
 
 /**
  * @author Nurislom

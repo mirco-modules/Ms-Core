@@ -2,9 +2,9 @@ package org.khasanof.core.tenancy.core.resolver.header.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.khasanof.core.tenancy.core.TenantContext;
 import org.khasanof.core.tenancy.core.model.Tenant;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * Interceptor to identify and set the current tenant based on the incoming request header.

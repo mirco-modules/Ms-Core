@@ -1,10 +1,11 @@
 package org.khasanof.core.tenancy.multi.manager;
 
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.khasanof.core.migration.core.database.DatabaseCreatorService;
 import org.khasanof.core.tenancy.core.model.TenantDataSource;
-import org.khasanof.core.tenancy.multi.database.CreateDatabaseService;
-import org.khasanof.core.tenancy.multi.helper.DatabaseNameHelper;
 import org.khasanof.core.tenancy.multi.liquibase.LiquibaseService;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
+import org.khasanof.core.tenancy.multi.resolver.datasource.url.DataSourceUrlResolver;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -19,18 +20,21 @@ public class DataSourceManagerImpl implements DataSourceManager {
 
     private final LiquibaseService liquibaseService;
     private final DataSourceResolver dataSourceResolver;
-    private final DatabaseNameHelper databaseNameHelper;
-    private final CreateDatabaseService createDatabaseService;
+    private final DataSourceProperties dataSourceProperties;
+    private final DataSourceUrlResolver dataSourceUrlResolver;
+    private final DatabaseCreatorService databaseCreatorService;
 
     public DataSourceManagerImpl(LiquibaseService liquibaseService,
                                  DataSourceResolver dataSourceResolver,
-                                 DatabaseNameHelper databaseNameHelper,
-                                 CreateDatabaseService createDatabaseService) {
+                                 DataSourceProperties dataSourceProperties,
+                                 DataSourceUrlResolver dataSourceUrlResolver,
+                                 DatabaseCreatorService databaseCreatorService) {
 
         this.liquibaseService = liquibaseService;
         this.dataSourceResolver = dataSourceResolver;
-        this.databaseNameHelper = databaseNameHelper;
-        this.createDatabaseService = createDatabaseService;
+        this.dataSourceProperties = dataSourceProperties;
+        this.dataSourceUrlResolver = dataSourceUrlResolver;
+        this.databaseCreatorService = databaseCreatorService;
     }
 
     /**
@@ -65,8 +69,27 @@ public class DataSourceManagerImpl implements DataSourceManager {
      * @param tenantIdentifier
      */
     private void createDatabase(Long tenantIdentifier) {
-        var databaseName = databaseNameHelper.getDatabaseName(tenantIdentifier);
-        createDatabaseService.create(databaseName);
+        var dataSourceProperties = toDataSourceProperties(tenantIdentifier);
+        databaseCreatorService.createIfNotExist(dataSourceProperties);
+    }
+
+    /**
+     *
+     * @param tenantIdentifier
+     * @return
+     */
+    private DataSourceProperties toDataSourceProperties(Long tenantIdentifier) {
+        DataSourceProperties dataSourceProperties = new DataSourceProperties();
+
+        String targetUrl = dataSourceUrlResolver.resolve(tenantIdentifier, this.dataSourceProperties.getUrl());
+
+        dataSourceProperties.setUrl(targetUrl);
+        dataSourceProperties.setType(this.dataSourceProperties.getType());
+        dataSourceProperties.setPassword(this.dataSourceProperties.getPassword());
+        dataSourceProperties.setUsername(this.dataSourceProperties.getUsername());
+        dataSourceProperties.setDriverClassName(this.dataSourceProperties.getDriverClassName());
+
+        return dataSourceProperties;
     }
 
     /**

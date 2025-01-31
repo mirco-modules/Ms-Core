@@ -1,9 +1,9 @@
 package org.khasanof.core.tenancy.multi.resolver.datasource;
 
-import org.khasanof.core.tenancy.core.model.TenantDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.khasanof.core.tenancy.multi.helper.DatabaseNameHelper;
+import org.khasanof.core.tenancy.core.model.TenantDataSource;
+import org.khasanof.core.tenancy.multi.resolver.datasource.url.DataSourceUrlResolver;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -16,18 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataSourceResolverImpl implements DataSourceResolver {
 
-    public static final String SLASH = "/";
     private final Map<Long, TenantDataSource> dataSources = new ConcurrentHashMap<>();
     private final Map<Long, DataSource> resolvedDataSources = new ConcurrentHashMap<>();
 
-    private final DatabaseNameHelper databaseNameHelper;
     private final DataSourceProperties dataSourceProperties;
+    private final DataSourceUrlResolver dataSourceUrlResolver;
 
-    public DataSourceResolverImpl(DatabaseNameHelper databaseNameHelper,
-                                  DataSourceProperties dataSourceProperties) {
-
-        this.databaseNameHelper = databaseNameHelper;
+    public DataSourceResolverImpl(DataSourceProperties dataSourceProperties, DataSourceUrlResolver dataSourceUrlResolver) {
         this.dataSourceProperties = dataSourceProperties;
+        this.dataSourceUrlResolver = dataSourceUrlResolver;
     }
 
     /**
@@ -50,7 +47,7 @@ public class DataSourceResolverImpl implements DataSourceResolver {
      */
     private TenantDataSource create(Long tenantIdentifier) {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        String targetUrl = getTargetUrl(tenantIdentifier);
+        String targetUrl = dataSourceUrlResolver.resolve(tenantIdentifier, dataSourceProperties.getUrl());
 
         dataSourceBuilder.url(targetUrl);
         dataSourceBuilder.type(dataSourceProperties.getType());
@@ -64,31 +61,6 @@ public class DataSourceResolverImpl implements DataSourceResolver {
         dataSources.put(tenantIdentifier, tenantDataSource);
         resolvedDataSources.put(tenantIdentifier, dataSource);
         return tenantDataSource;
-    }
-
-    /**
-     *
-     * @param tenantIdentifier
-     * @return
-     */
-    private String getTargetUrl(Long tenantIdentifier) {
-        String url = removeLastPathSegment(dataSourceProperties.getUrl());
-        String databaseName = databaseNameHelper.getDatabaseName(tenantIdentifier);
-        return url.concat(SLASH).concat(databaseName);
-    }
-
-    /**
-     *
-     * @param url
-     * @return
-     */
-    public String removeLastPathSegment(String url) {
-        if (url == null || !url.contains(SLASH)) {
-            return url;
-        }
-
-        int lastSlashIndex = url.lastIndexOf(SLASH);
-        return url.substring(0, lastSlashIndex);
     }
 
     /**

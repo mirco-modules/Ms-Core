@@ -86,8 +86,8 @@ public class LiquibaseServiceImpl implements LiquibaseService {
 
         Database database = DatabaseFactory.getInstance()
                 .findCorrectDatabaseImplementation(new JdbcConnection(connection));
-        database.setDefaultSchemaName(DEFAULT_SCHEMA_NAME);
 
+        database.setDefaultSchemaName(DEFAULT_SCHEMA_NAME);
         return database;
     }
 

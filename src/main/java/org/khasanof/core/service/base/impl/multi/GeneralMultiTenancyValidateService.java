@@ -1,22 +1,25 @@
-package org.khasanof.core.service.base.impl;
+package org.khasanof.core.service.base.impl.multi;
 
 import org.khasanof.core.domain.types.IEntity;
-import org.khasanof.core.repository.base.IGeneralRepository;
+import org.khasanof.core.repository.base.multi.IGeneralMultiTenancyRepository;
 import org.khasanof.core.service.dto.base.IDto;
 import org.khasanof.core.service.mapper.base.IGeneralMapper;
 import org.khasanof.core.service.validator.manager.IGeneralValidatorManager;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core.service.base.impl
- * @since 12/19/2024 2:30 PM
+ * @see org.khasanof.core.service.base.impl.multi
+ * @since 1/27/2025 11:30 AM
  */
-public abstract class GeneralValidateService<E extends IEntity, D extends IDto> extends GeneralService<E, D> {
+public abstract class GeneralMultiTenancyValidateService<E extends IEntity, D extends IDto> extends GeneralMultiTenancyService<E, D> {
 
     protected final IGeneralValidatorManager generalValidatorManager;
 
-    public GeneralValidateService(IGeneralMapper<E, D> generalMapper, IGeneralRepository<E> generalRepository, IGeneralValidatorManager generalValidatorManager) {
-        super(generalMapper, generalRepository);
+    public GeneralMultiTenancyValidateService(IGeneralMapper<E, D> generalMapper,
+                                              IGeneralMultiTenancyRepository<E> generalMultiTenancyRepository,
+                                              IGeneralValidatorManager generalValidatorManager
+    ) {
+        super(generalMapper, generalMultiTenancyRepository);
         this.generalValidatorManager = generalValidatorManager;
     }
 

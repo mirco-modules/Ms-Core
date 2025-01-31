@@ -1,14 +1,14 @@
 package org.khasanof.core.tenancy.core;
 
-import org.khasanof.core.tenancy.TenancyConfigurer;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.ConditionContext;
+import org.khasanof.core.tenancy.TenancyConfigurer;
 
 import static org.khasanof.core.tenancy.core.constants.TenancyConstants.TENANCY_CONFIGURER;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core.tenancy
+ * @see org.khasanof.core.tenancy.core
  * @since 11/9/2024 4:48 PM
  */
 public abstract class AbstractTenancyConfigurer {
