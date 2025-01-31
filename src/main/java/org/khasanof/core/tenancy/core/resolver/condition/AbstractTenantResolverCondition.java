@@ -1,11 +1,11 @@
 package org.khasanof.core.tenancy.core.resolver.condition;
 
 import lombok.extern.slf4j.Slf4j;
-import org.khasanof.core.domain.enumeration.TenancyResolverType;
-import org.khasanof.core.tenancy.core.AbstractTenancyConfigurer;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.khasanof.core.domain.enumeration.TenancyResolverType;
+import org.khasanof.core.tenancy.core.AbstractTenancyConfigurer;
 
 import java.util.Objects;
 

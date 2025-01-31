@@ -1,6 +1,5 @@
 package org.khasanof.core.tenancy.core.resolver.header.condition;
 
-
 import org.khasanof.core.domain.enumeration.TenancyResolverType;
 import org.khasanof.core.tenancy.core.resolver.condition.AbstractTenantResolverCondition;
 

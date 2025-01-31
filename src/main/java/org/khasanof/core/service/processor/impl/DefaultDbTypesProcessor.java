@@ -32,6 +32,7 @@ public class DefaultDbTypesProcessor implements RootProcessor {
         persistDbTypes(DbTypesConstants.TYPE_PREFIX, "long", true);
         persistDbTypes(DbTypesConstants.TYPE_PREFIX, "float", true);
         persistDbTypes(DbTypesConstants.TYPE_PREFIX, "double", true);
+        persistDbTypes(DbTypesConstants.TYPE_PREFIX, "String", true);
     }
 
     /**

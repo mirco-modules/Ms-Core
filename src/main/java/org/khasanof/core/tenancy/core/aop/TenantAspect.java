@@ -17,7 +17,7 @@ public class TenantAspect {
     /**
      *
      */
-    @Before("execution(* org.khasanof.core.tenancy.core.repository.MultitenancyRepository+.*(..))")
+    @Before("execution(* org.khasanof.core.repository.base.multi.IGeneralMultiTenancyRepository+.*(..))")
     public void beforeRepositoryMethods() {
         Tenant currentTenant = TenantContext.getCurrentTenant();
         currentTenant.setRepositoryType(RepositoryType.MULTI_TENANCY);

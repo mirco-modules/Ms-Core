@@ -1,7 +1,8 @@
 package org.khasanof.core.tenancy.multi;
 
-import org.khasanof.core.domain.enumeration.RepositoryType;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.khasanof.core.domain.enumeration.RepositoryType;
+import org.khasanof.core.tenancy.core.TenantContext;
 import org.khasanof.core.tenancy.multi.manager.DataSourceManager;
 import org.khasanof.core.tenancy.multi.resolver.TenantIdentifierResolver;
 
@@ -43,10 +44,18 @@ public class MultiTenantDataSource extends AbstractRoutingDataSource {
      */
     @Override
     public Connection getConnection() throws SQLException {
-        if (Objects.equals(getCurrentTenantRepositoryType(), RepositoryType.DEFAULT)) {
+        if (checkDefaultDatasourceCondition()) {
             return defaultDataSource.getConnection();
         }
         return getMultitenanyConnection();
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean checkDefaultDatasourceCondition() {
+        return Objects.equals(getCurrentTenantRepositoryType(), RepositoryType.DEFAULT) && Objects.equals(TenantContext.getCurrentTenantId(), 0L);
     }
 
     /**

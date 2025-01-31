@@ -27,6 +27,6 @@ public class DatabaseNameHelper {
         if (applicationName == null) {
             applicationName = "default";
         }
-        return applicationName + tenantIdentifier;
+        return (applicationName + tenantIdentifier).toLowerCase();
     }
 }
