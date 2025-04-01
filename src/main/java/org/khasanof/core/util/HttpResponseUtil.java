@@ -37,4 +37,17 @@ public abstract class HttpResponseUtil {
         log.debug("Response entity status code is OK : {}", response.getBody());
         return new BasicResultData<>(response.getBody());
     }
+
+    /**
+     *
+     * @param response
+     * @return
+     * @param <T>
+     */
+    public static <T> boolean isSuccessful(ResponseEntity<T> response) {
+        if (response == null) {
+            return false;
+        }
+        return !response.getStatusCode().isError();
+    }
 }
