@@ -3,6 +3,7 @@ package org.khasanof.core.service.scanner;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.type.filter.TypeFilter;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,4 +19,11 @@ public interface DynamicClassScanningComponentProvider {
      * @return
      */
     Set<BeanDefinition> findComponents(TypeFilter typeFilter);
+
+    /**
+     *
+     * @param typeFilter
+     * @return
+     */
+    List<Class<?>> findClasses(TypeFilter typeFilter);
 }

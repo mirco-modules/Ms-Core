@@ -36,5 +36,5 @@ public interface IGeneralResource<D extends IDto> {
      * @return
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<Boolean> delete(@PathVariable Long id);
+    ResponseEntity<Void> delete(@PathVariable Long id);
 }

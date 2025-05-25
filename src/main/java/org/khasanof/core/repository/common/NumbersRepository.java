@@ -1,10 +1,10 @@
-package org.khasanof.core.repository;
+package org.khasanof.core.repository.common;
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.stereotype.Repository;
-import org.khasanof.core.domain.DbTypes;
-import org.khasanof.core.domain.Numbers;
+import org.khasanof.core.domain.common.DbTypes;
+import org.khasanof.core.domain.common.Numbers;
 import org.khasanof.core.repository.base.IGeneralRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

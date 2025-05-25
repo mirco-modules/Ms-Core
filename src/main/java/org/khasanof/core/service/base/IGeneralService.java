@@ -40,7 +40,6 @@ public interface IGeneralService<E extends IEntity, D extends IDto> {
      * Delete the "id" entity.
      *
      * @param id the id of the entity.
-     * @return delete result
      */
-    Boolean delete(Long id);
+    void delete(Long id);
 }

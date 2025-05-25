@@ -130,20 +130,12 @@ public abstract class GeneralService<E extends IEntity, D extends IDto> implemen
      * @return delete result
      */
     @Override
-    public Boolean delete(Long id) {
+    public void delete(Long id) {
         log.debug("Request to delete : {}", id);
         preDelete(id);
-
-        if (!generalRepository.existsById(id)) {
-            log.warn("Entity not found by id : {}", id);
-            return Boolean.FALSE;
-        }
-
         generalRepository.deleteById(id);
-        log.debug("Entity successfully deleted : {}", id);
-
         postDelete(id);
-        return Boolean.TRUE;
+        log.debug("Entity successfully deleted : {}", id);
     }
 
     /**

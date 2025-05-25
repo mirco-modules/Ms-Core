@@ -1,17 +1,20 @@
-package org.khasanof.core.domain;
+package org.khasanof.core.domain.common;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
+import org.khasanof.core.annotation.Common;
+import org.khasanof.core.domain.types.IEntity;
 
 import java.io.Serializable;
 
 /**
- * A DbTypes.
+ * A Variables.
  */
 @Entity
-@Table(name = "db_types")
+@Common
+@Table(name = "variables")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class DbTypes implements Serializable {
+public class Variables implements IEntity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,20 +25,12 @@ public class DbTypes implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "prefix", nullable = false)
-    private String prefix;
-
-    @NotNull
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @NotNull
-    @Column(name = "synonym", nullable = false)
-    private String synonym;
-
-    @NotNull
-    @Column(name = "is_primitive", nullable = false)
-    private Boolean isPrimitive;
+    @Column(name = "ent_value", nullable = false)
+    private String value;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -43,7 +38,7 @@ public class DbTypes implements Serializable {
         return this.id;
     }
 
-    public DbTypes id(Long id) {
+    public Variables id(Long id) {
         this.setId(id);
         return this;
     }
@@ -52,24 +47,11 @@ public class DbTypes implements Serializable {
         this.id = id;
     }
 
-    public String getPrefix() {
-        return this.prefix;
-    }
-
-    public DbTypes prefix(String prefix) {
-        this.setPrefix(prefix);
-        return this;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
     public String getName() {
         return this.name;
     }
 
-    public DbTypes name(String name) {
+    public Variables name(String name) {
         this.setName(name);
         return this;
     }
@@ -78,30 +60,17 @@ public class DbTypes implements Serializable {
         this.name = name;
     }
 
-    public String getSynonym() {
-        return this.synonym;
+    public String getValue() {
+        return this.value;
     }
 
-    public DbTypes synonym(String synonym) {
-        this.setSynonym(synonym);
+    public Variables value(String value) {
+        this.setValue(value);
         return this;
     }
 
-    public void setSynonym(String synonym) {
-        this.synonym = synonym;
-    }
-
-    public Boolean getIsPrimitive() {
-        return this.isPrimitive;
-    }
-
-    public DbTypes isPrimitive(Boolean isPrimitive) {
-        this.setIsPrimitive(isPrimitive);
-        return this;
-    }
-
-    public void setIsPrimitive(Boolean isPrimitive) {
-        this.isPrimitive = isPrimitive;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -111,10 +80,10 @@ public class DbTypes implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DbTypes)) {
+        if (!(o instanceof Variables)) {
             return false;
         }
-        return getId() != null && getId().equals(((DbTypes) o).getId());
+        return getId() != null && getId().equals(((Variables) o).getId());
     }
 
     @Override
@@ -126,12 +95,10 @@ public class DbTypes implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "DbTypes{" +
+        return "Variables{" +
             "id=" + getId() +
-            ", prefix='" + getPrefix() + "'" +
             ", name='" + getName() + "'" +
-            ", synonym='" + getSynonym() + "'" +
-            ", isPrimitive='" + getIsPrimitive() + "'" +
+            ", value='" + getValue() + "'" +
             "}";
     }
 }

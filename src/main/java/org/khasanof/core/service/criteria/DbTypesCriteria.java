@@ -1,5 +1,7 @@
 package org.khasanof.core.service.criteria;
 
+import org.khasanof.core.domain.common.DbTypes;
+import org.khasanof.core.service.criteria.base.ICriteria;
 import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.BooleanFilter;
 import tech.jhipster.service.filter.Filter;
@@ -11,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Criteria class for the {@link org.khasanof.core.domain.DbTypes} entity. This class is used
+ * Criteria class for the {@link DbTypes} entity. This class is used
  * in {@link org.khasanof.core.web.rest.DbTypesResource} to receive all the possible filtering options from
  * the Http GET request parameters.
  * For example the following could be a valid request:
@@ -20,7 +22,7 @@ import java.util.Optional;
  * fix type specific filters.
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class DbTypesCriteria implements Serializable, Criteria {
+public class DbTypesCriteria implements Serializable, ICriteria {
 
     private static final long serialVersionUID = 1L;
 

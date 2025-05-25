@@ -1,6 +1,6 @@
 package org.khasanof.core.service;
 
-import org.khasanof.core.domain.Numbers;
+import org.khasanof.core.domain.common.Numbers;
 import org.khasanof.core.service.base.IGeneralService;
 import org.khasanof.core.service.dto.NextNumberDTO;
 import org.khasanof.core.service.dto.NumbersDTO;

@@ -58,9 +58,10 @@ public abstract class GeneralResource<E extends IEntity, D extends IDto> impleme
      * @return the {@link ResponseEntity} with status {@code 200 (OK)}.
      */
     @Override
-    public ResponseEntity<Boolean> delete(Long id) {
+    public ResponseEntity<Void> delete(Long id) {
         log.debug("REST request to delete : {}", id);
-        Boolean deleted = generalService.delete(id);
-        return ResponseEntity.ok(deleted);
+        generalService.delete(id);
+        return ResponseEntity.noContent()
+                .build();
     }
 }

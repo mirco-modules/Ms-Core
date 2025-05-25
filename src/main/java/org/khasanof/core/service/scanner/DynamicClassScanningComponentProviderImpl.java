@@ -6,6 +6,7 @@ import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.stereotype.Service;
 import org.khasanof.core.service.ApplicationPackagesService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -40,5 +41,28 @@ public class DynamicClassScanningComponentProviderImpl implements DynamicClassSc
                 .map(scanner::findCandidateComponents)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Class<?>> findClasses(TypeFilter typeFilter) {
+        List<Class<?>> classes = new ArrayList<>();
+        for (BeanDefinition beanDefinition : findComponents(typeFilter)) {
+            Class<?> classByBeanName = getClassByBeanName(beanDefinition);
+            if (classByBeanName == null) {
+                continue;
+            }
+            classes.add(classByBeanName);
+        }
+        return classes;
+    }
+
+    private Class<?> getClassByBeanName(BeanDefinition beanDefinition) {
+        try {
+            return this.getClass()
+                    .getClassLoader()
+                    .loadClass(beanDefinition.getBeanClassName());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 }

@@ -12,7 +12,7 @@ import static org.khasanof.core.security.SecurityConstants.SECRET_KEY;
  * @see org.khasanof.core.security
  * @since 11/9/2024 5:22 PM
  */
-@Configuration
+//@Configuration
 public class PasswordEncoderConfiguration {
 
     /**

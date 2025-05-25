@@ -1,7 +1,7 @@
 package org.khasanof.core.service.query;
 
 import org.springframework.stereotype.Service;
-import org.khasanof.core.domain.Numbers;
+import org.khasanof.core.domain.common.Numbers;
 import org.khasanof.core.repository.base.IGeneralRepository;
 import org.khasanof.core.service.criteria.NumbersCriteria;
 import org.khasanof.core.service.dto.NumbersDTO;

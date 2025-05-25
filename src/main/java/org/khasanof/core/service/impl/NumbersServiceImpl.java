@@ -2,15 +2,13 @@ package org.khasanof.core.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.khasanof.core.domain.Numbers;
-import org.khasanof.core.repository.NumbersRepository;
-import org.khasanof.core.repository.base.IGeneralRepository;
+import org.khasanof.core.domain.common.Numbers;
+import org.khasanof.core.repository.common.NumbersRepository;
 import org.khasanof.core.service.NumbersService;
 import org.khasanof.core.service.base.impl.GeneralService;
 import org.khasanof.core.service.dto.NextNumberDTO;
 import org.khasanof.core.service.dto.NumbersDTO;
 import org.khasanof.core.service.mapper.NumbersMapper;
-import org.khasanof.core.service.mapper.base.IGeneralMapper;
 
 import java.util.Optional;
 

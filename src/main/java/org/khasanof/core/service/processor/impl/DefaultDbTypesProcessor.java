@@ -2,8 +2,8 @@ package org.khasanof.core.service.processor.impl;
 
 import org.springframework.stereotype.Component;
 import org.khasanof.core.constants.DbTypesConstants;
-import org.khasanof.core.domain.DbTypes;
-import org.khasanof.core.repository.DbTypesRepository;
+import org.khasanof.core.domain.common.DbTypes;
+import org.khasanof.core.repository.common.DbTypesRepository;
 import org.khasanof.core.service.processor.RootProcessor;
 
 /**

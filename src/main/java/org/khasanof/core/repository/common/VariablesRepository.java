@@ -1,9 +1,8 @@
-package org.khasanof.core.repository;
+package org.khasanof.core.repository.common;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.khasanof.core.domain.common.Variables;
+import org.khasanof.core.repository.base.IGeneralRepository;
 import org.springframework.stereotype.Repository;
-import org.khasanof.core.domain.Variables;
 
 import java.util.Optional;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface VariablesRepository extends JpaRepository<Variables, Long>, JpaSpecificationExecutor<Variables> {
+public interface VariablesRepository extends IGeneralRepository<Variables> {
 
     /**
      *

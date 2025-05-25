@@ -1,15 +1,17 @@
 package org.khasanof.core.service.dto;
 
 import jakarta.validation.constraints.NotNull;
+import org.khasanof.core.domain.common.Variables;
+import org.khasanof.core.service.dto.base.IDto;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A DTO for the {@link org.khasanof.core.domain.Variables} entity.
+ * A DTO for the {@link Variables} entity.
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class VariablesDTO implements Serializable {
+public class VariablesDTO implements IDto, Serializable {
 
     private Long id;
 

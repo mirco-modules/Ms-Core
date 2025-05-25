@@ -1,7 +1,10 @@
 package org.khasanof.core;
 
+import org.khasanof.core.config.RootDataSourceProperties;
+import org.khasanof.core.config.RootProperties;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.context.TypeExcludeFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
@@ -19,5 +22,6 @@ import org.springframework.context.annotation.FilterType;
                 classes = {AutoConfigurationExcludeFilter.class}
         )}
 )
+@EnableConfigurationProperties({RootProperties.class, RootDataSourceProperties.class})
 public class MsCoreAutoConfiguration {
 }

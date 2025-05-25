@@ -1,7 +1,7 @@
 package org.khasanof.core.service.mapper;
 
 import org.mapstruct.Mapper;
-import org.khasanof.core.domain.Numbers;
+import org.khasanof.core.domain.common.Numbers;
 import org.khasanof.core.service.dto.NumbersDTO;
 import org.khasanof.core.service.mapper.base.IGeneralMapper;
 

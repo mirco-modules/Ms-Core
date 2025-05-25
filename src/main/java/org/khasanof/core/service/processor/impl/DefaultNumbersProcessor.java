@@ -1,11 +1,10 @@
 package org.khasanof.core.service.processor.impl;
 
-import org.khasanof.core.constants.NumberProcessorConstants;
-import org.khasanof.core.domain.DbTypes;
-import org.khasanof.core.domain.Numbers;
+import org.khasanof.core.domain.common.DbTypes;
+import org.khasanof.core.domain.common.Numbers;
 import org.khasanof.core.domain.types.ICodeable;
-import org.khasanof.core.repository.DbTypesRepository;
-import org.khasanof.core.repository.NumbersRepository;
+import org.khasanof.core.repository.common.DbTypesRepository;
+import org.khasanof.core.repository.common.NumbersRepository;
 import org.khasanof.core.service.HQLExecutorService;
 import org.khasanof.core.service.processor.RootProcessor;
 import org.khasanof.core.service.scanner.DynamicClassScanningComponentProvider;

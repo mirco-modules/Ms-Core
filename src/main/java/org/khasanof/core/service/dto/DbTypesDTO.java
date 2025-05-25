@@ -1,15 +1,17 @@
 package org.khasanof.core.service.dto;
 
 import jakarta.validation.constraints.NotNull;
+import org.khasanof.core.domain.common.DbTypes;
+import org.khasanof.core.service.dto.base.IDto;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * A DTO for the {@link org.khasanof.core.domain.DbTypes} entity.
+ * A DTO for the {@link DbTypes} entity.
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class DbTypesDTO implements Serializable {
+public class DbTypesDTO implements IDto, Serializable {
 
     private Long id;
 

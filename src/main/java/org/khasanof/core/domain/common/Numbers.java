@@ -1,8 +1,9 @@
-package org.khasanof.core.domain;
+package org.khasanof.core.domain.common;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.khasanof.core.annotation.Common;
 import org.khasanof.core.domain.types.IEntity;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.Objects;
  * @since 12/11/2024 12:24 PM
  */
 @Entity
+@Common
 @Table(name = "numbers")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Numbers implements IEntity, Serializable {

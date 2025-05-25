@@ -1,5 +1,7 @@
 package org.khasanof.core.service.criteria;
 
+import org.khasanof.core.domain.common.Variables;
+import org.khasanof.core.service.criteria.base.ICriteria;
 import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.Filter;
 import tech.jhipster.service.filter.LongFilter;
@@ -10,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Criteria class for the {@link org.khasanof.core.domain.Variables} entity. This class is used
+ * Criteria class for the {@link Variables} entity. This class is used
  * in {@link org.khasanof.core.web.rest.VariablesResource} to receive all the possible filtering options from
  * the Http GET request parameters.
  * For example the following could be a valid request:
@@ -19,7 +21,7 @@ import java.util.Optional;
  * fix type specific filters.
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class VariablesCriteria implements Serializable, Criteria {
+public class VariablesCriteria implements Serializable, ICriteria {
 
     private static final long serialVersionUID = 1L;
 

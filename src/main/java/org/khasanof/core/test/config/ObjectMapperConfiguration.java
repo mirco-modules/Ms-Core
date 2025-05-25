@@ -3,6 +3,7 @@ package org.khasanof.core.test.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @see org.khasanof.core.test.config
  * @since 9/21/2024 6:32 PM
  */
-@Configuration
+@TestConfiguration
 public class ObjectMapperConfiguration {
 
     /**
