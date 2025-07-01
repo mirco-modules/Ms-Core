@@ -38,6 +38,6 @@ public class BasicAuthMsClientFactory extends AbstractMsClientFactory {
     @Override
     protected Feign.Builder feignBuilder(Class<?> clientClass) {
         return super.feignBuilder(clientClass)
-                .requestInterceptor(new BasicAuthRequestInterceptor(SecurityConstants.ADMIN_USER, SecurityConstants.ADMIN_PASSWORD));
+                .requestInterceptor(new BasicAuthRequestInterceptor(SecurityConstants.ADMIN_USER, SecurityConstants.ADMIN_USER_PASSWORD));
     }
 }

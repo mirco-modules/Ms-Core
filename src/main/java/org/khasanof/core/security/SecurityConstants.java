@@ -8,8 +8,11 @@ package org.khasanof.core.security;
 public final class SecurityConstants {
 
     public static final String SECRET_KEY = "Gsx2yjFNz1y38UHFUEwTUEvj9187fmvC";
+    public static final String ADMIN_ROLES = "ADMIN";
 
     public static final String ADMIN_USER = "admin";
-    public static final String ADMIN_PASSWORD = "F6FE4FEF43BC6661D6F34E4CA3C8B";
-    public static final String ADMIN_ROLES = "ADMIN";
+    public static final String ADMIN_USER_PASSWORD = "F6FE4FEF43BC6661D6F34E4CA3C8B";
+
+    public static final String SIMPLE_USER = "user";
+    public static final String SIMPLE_USER_PASSWORD = "user";
 }

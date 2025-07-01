@@ -18,6 +18,7 @@ import java.util.stream.Stream;
  */
 public final class SecurityUtils {
 
+    public static final String TENANT_ID_KEY = "tid";
     public static final String CLAIMS_NAMESPACE = "https://www.jhipster.tech/";
 
     private SecurityUtils() {}
@@ -46,6 +47,29 @@ public final class SecurityUtils {
             }
         } else if (authentication.getPrincipal() instanceof String s) {
             return s;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static Optional<Long> getCurrentUserTID() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return Optional.ofNullable(extractTID(securityContext.getAuthentication()));
+    }
+
+    private static Long extractTID(Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        } else if (authentication instanceof JwtAuthenticationToken) {
+            return (Long) ((JwtAuthenticationToken) authentication).getToken().getClaims().get(TENANT_ID_KEY);
+        } else if (authentication.getPrincipal() instanceof DefaultOidcUser) {
+            Map<String, Object> attributes = ((DefaultOidcUser) authentication.getPrincipal()).getAttributes();
+            if (attributes.containsKey(TENANT_ID_KEY)) {
+                return (Long) attributes.get(TENANT_ID_KEY);
+            }
         }
         return null;
     }
