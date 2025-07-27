@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.khasanof.core.tenancy.core.resolver.header.condition.HttpHeaderTenantResolverCondition;
-import org.khasanof.core.tenancy.core.resolver.header.interceptor.InterceptorRegistryConfigurer;
+import org.khasanof.core.tenancy.core.resolver.header.interceptor.HttpHeaderInterceptorRegistryConfigurer;
 
 /**
  * @author Nurislom
@@ -20,7 +20,7 @@ public class HttpHeaderTenantResolverConfiguration {
      * @return
      */
     @Bean
-    public InterceptorRegistryConfigurer interceptorRegistryConfiguration() {
-        return new InterceptorRegistryConfigurer();
+    public HttpHeaderInterceptorRegistryConfigurer interceptorRegistryConfiguration() {
+        return new HttpHeaderInterceptorRegistryConfigurer();
     }
 }

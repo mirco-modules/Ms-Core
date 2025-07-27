@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @see org.khasanof.core.tenancy.core.resolver.header.interceptor
  * @since 11/2/2024 2:21 PM
  */
-public class InterceptorRegistryConfigurer implements WebMvcConfigurer {
+public class HttpHeaderInterceptorRegistryConfigurer implements WebMvcConfigurer {
 
     /**
      *
@@ -16,6 +16,6 @@ public class InterceptorRegistryConfigurer implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TenantIdentifierInterceptor());
+        registry.addInterceptor(new HttpHeaderTenantIdResolverInterceptor());
     }
 }

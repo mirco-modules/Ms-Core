@@ -1,4 +1,4 @@
-package org.khasanof.core.tenancy.single.config;
+package org.khasanof.core.tenancy.core.resolver.jwt.interceptor;
 
 import org.khasanof.core.tenancy.core.resolver.header.interceptor.HttpHeaderTenantIdResolverInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -6,10 +6,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Nurislom
- * @see org.khasanof.core
- * @since 11/2/2024 2:21 PM
+ * @see org.khasanof.core.tenancy.core.resolver.jwt.interceptor
+ * @since 7/13/2025 4:07 PM
  */
-public class InterceptorRegistryConfiguration implements WebMvcConfigurer {
+public class JwtInterceptorRegistryConfigurer implements WebMvcConfigurer {
 
     /**
      *
@@ -17,6 +17,6 @@ public class InterceptorRegistryConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new HttpHeaderTenantIdResolverInterceptor());
+        registry.addInterceptor(new JwtTenantIdResolverInterceptor());
     }
 }

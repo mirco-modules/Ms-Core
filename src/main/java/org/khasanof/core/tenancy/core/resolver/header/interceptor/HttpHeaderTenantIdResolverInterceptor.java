@@ -13,7 +13,7 @@ import org.khasanof.core.tenancy.core.model.Tenant;
  * @see org.khasanof.core.tenancy.single.interceptor
  * @since 11/2/2024 2:17 PM
  */
-public class TenantIdentifierInterceptor implements HandlerInterceptor {
+public class HttpHeaderTenantIdResolverInterceptor implements HandlerInterceptor {
 
     public static final String TENANT_ID = "X-Tenant-Id";
 

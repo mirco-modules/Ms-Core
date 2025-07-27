@@ -303,7 +303,7 @@ public class MultiTenantDatabaseConfiguration {
             jpaProperties.put("hibernate.timezone.default_storage", "NORMALIZE");
             jpaProperties.put("hibernate.type.preferred_instant_jdbc_type", "TIMESTAMP");
             jpaProperties.put("hibernate.id.new_generator_mappings", true);
-            jpaProperties.put("hibernate.connection.provider_disables_autocommit", true);
+            jpaProperties.put("hibernate.connection.provider_disables_autocommit", false);
             jpaProperties.put("hibernate.cache.use_second_level_cache", false);
             jpaProperties.put("hibernate.cache.use_query_cache", false);
             jpaProperties.put("hibernate.generate_statistics", false);

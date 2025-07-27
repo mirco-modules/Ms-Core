@@ -13,12 +13,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.khasanof.core.constants.Constants.TENANT_ID_KEY;
+
 /**
  * Utility class for Spring Security.
  */
 public final class SecurityUtils {
 
-    public static final String TENANT_ID_KEY = "tid";
     public static final String CLAIMS_NAMESPACE = "https://www.jhipster.tech/";
 
     private SecurityUtils() {}
