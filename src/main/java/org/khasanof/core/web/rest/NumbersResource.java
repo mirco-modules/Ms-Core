@@ -1,5 +1,6 @@
 package org.khasanof.core.web.rest;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.khasanof.core.web.rest.base.GeneralQueryResource;
  * @since 12/11/2024 2:14 PM
  */
 @Slf4j
+@Hidden
 @RestController
 @RequestMapping("/api/numbers")
 public class NumbersResource extends GeneralQueryResource<Numbers, NumbersDTO, NumbersCriteria> {

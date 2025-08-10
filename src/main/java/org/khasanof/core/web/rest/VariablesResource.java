@@ -1,5 +1,6 @@
 package org.khasanof.core.web.rest;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.khasanof.core.domain.common.Variables;
 import org.khasanof.core.service.base.IGeneralService;
 import org.khasanof.core.service.criteria.VariablesCriteria;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * REST controller for managing {@link Variables}.
  */
+@Hidden
 @RestController
 @RequestMapping("/api/variables")
 public class VariablesResource extends GeneralQueryResource<Variables, VariablesDTO, VariablesCriteria> {

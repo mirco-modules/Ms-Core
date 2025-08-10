@@ -3,6 +3,8 @@ package org.khasanof.core.tenancy.multi.helper;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import static org.khasanof.core.tenancy.multi.helper.DatabaseNameConstants.PROPERTY_KEY;
+
 /**
  * @author Nurislom
  * @see org.khasanof.core.tenancy.multi.helper
@@ -23,7 +25,10 @@ public class DatabaseNameHelper {
      * @return
      */
     public String getDatabaseName(Long tenantIdentifier) {
-        String applicationName = environment.getProperty("spring.application.name");
+        String applicationName = environment.getProperty(PROPERTY_KEY);
+        if (applicationName == null) {
+            applicationName = environment.getProperty("spring.application.name");
+        }
         if (applicationName == null) {
             applicationName = "default";
         }
