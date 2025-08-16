@@ -7,6 +7,7 @@ import org.khasanof.core.annotation.Common;
 import org.khasanof.core.annotation.Tenancy;
 import org.khasanof.core.config.RootDataSourceProperties;
 import org.khasanof.core.migration.core.database.DatabaseCreatorService;
+import org.khasanof.core.service.hikari.HikariDataSourceConfigurerService;
 import org.khasanof.core.service.scanner.DynamicClassScanningComponentProvider;
 import org.khasanof.core.tenancy.multi.condition.MultiTenantCondition;
 import org.khasanof.core.tenancy.multi.helper.DatabaseNameHelper;
@@ -56,6 +57,7 @@ public class MultiTenantDatabaseConfiguration {
     private final DatabaseNameHelper databaseNameHelper;
     private final DatabaseCreatorService databaseCreatorService;
     private final RootDataSourceProperties rootDataSourceProperties;
+    private final HikariDataSourceConfigurerService hikariDataSourceConfigurerService;
 
     /**
      *
@@ -90,7 +92,7 @@ public class MultiTenantDatabaseConfiguration {
      */
     @Bean
     public DataSourceResolver dataSourceResolver() {
-        return new DataSourceResolverImpl(getTenantDbProperties(), dataSourceUrlResolver());
+        return new DataSourceResolverImpl(getTenantDbProperties(), dataSourceUrlResolver(), rootDataSourceProperties, hikariDataSourceConfigurerService);
     }
 
     /**
@@ -134,9 +136,10 @@ public class MultiTenantDatabaseConfiguration {
         public static final String ENTITY_MANAGER_FACTORY = "entityManagerFactory";
 
         public CommonDataSourcesConfiguration(RootDataSourceProperties rootDataSourceProperties,
+                                              HikariDataSourceConfigurerService hikariDataSourceConfigurerService,
                                               DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider
         ) {
-            super(rootDataSourceProperties, dynamicClassScanningComponentProvider);
+            super(rootDataSourceProperties, hikariDataSourceConfigurerService, dynamicClassScanningComponentProvider);
         }
 
         /**
@@ -150,7 +153,7 @@ public class MultiTenantDatabaseConfiguration {
                     .initializeDataSourceBuilder()
                     .build();
             if (dataSource instanceof HikariDataSource hikariDataSource) {
-                hikariDataSource.setAutoCommit(false);
+                setMsDataSourceProperties(hikariDataSource, rootDataSourceProperties.getCommonProperties());
             }
             return dataSource;
         }
@@ -213,9 +216,10 @@ public class MultiTenantDatabaseConfiguration {
                 DataSourceManager dataSourceManager,
                 TenantIdentifierResolver tenantIdentifierResolver,
                 RootDataSourceProperties rootDataSourceProperties,
+                HikariDataSourceConfigurerService hikariDataSourceConfigurerService,
                 DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider
         ) {
-            super(rootDataSourceProperties, dynamicClassScanningComponentProvider);
+            super(rootDataSourceProperties, hikariDataSourceConfigurerService, dynamicClassScanningComponentProvider);
             this.dataSourceManager = dataSourceManager;
             this.tenantIdentifierResolver = tenantIdentifierResolver;
         }
@@ -231,7 +235,7 @@ public class MultiTenantDatabaseConfiguration {
                     .build();
 
             if (dataSource instanceof HikariDataSource hikariDataSource) {
-                hikariDataSource.setAutoCommit(false);
+                setMsDataSourceProperties(hikariDataSource, rootDataSourceProperties.getTenantProperties());
             }
 
             var multiTenantDataSource = new MultiTenantDataSource(dataSource, dataSourceManager, tenantIdentifierResolver);
@@ -277,10 +281,15 @@ public class MultiTenantDatabaseConfiguration {
     public static abstract class AbstractRootDataSourcesConfiguration {
 
         protected final RootDataSourceProperties rootDataSourceProperties;
+        protected final HikariDataSourceConfigurerService hikariDataSourceConfigurerService;
         protected final DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider;
 
-        public AbstractRootDataSourcesConfiguration(RootDataSourceProperties rootDataSourceProperties, DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider) {
+        public AbstractRootDataSourcesConfiguration(RootDataSourceProperties rootDataSourceProperties,
+                                                    HikariDataSourceConfigurerService hikariDataSourceConfigurerService,
+                                                    DynamicClassScanningComponentProvider dynamicClassScanningComponentProvider
+        ) {
             this.rootDataSourceProperties = rootDataSourceProperties;
+            this.hikariDataSourceConfigurerService = hikariDataSourceConfigurerService;
             this.dynamicClassScanningComponentProvider = dynamicClassScanningComponentProvider;
         }
 
@@ -317,6 +326,15 @@ public class MultiTenantDatabaseConfiguration {
             jpaProperties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
             jpaProperties.put("hibernate.implicit_naming_strategy", "org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy");
             return jpaProperties;
+        }
+
+        /**
+         *
+         * @param hikariDataSource
+         * @param properties
+         */
+        protected void setMsDataSourceProperties(HikariDataSource hikariDataSource, MsDataSourceProperties properties) {
+            hikariDataSourceConfigurerService.configurer(hikariDataSource, properties);
         }
     }
 }

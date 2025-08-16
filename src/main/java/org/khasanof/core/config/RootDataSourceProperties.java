@@ -1,6 +1,7 @@
 package org.khasanof.core.config;
 
 import lombok.Data;
+import org.khasanof.core.tenancy.multi.MsDataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -15,4 +16,7 @@ public class RootDataSourceProperties {
 
     private DataSourceProperties common;
     private DataSourceProperties tenant;
+
+    private MsDataSourceProperties commonProperties;
+    private MsDataSourceProperties tenantProperties;
 }

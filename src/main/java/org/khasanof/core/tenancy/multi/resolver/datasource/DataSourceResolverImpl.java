@@ -1,5 +1,9 @@
 package org.khasanof.core.tenancy.multi.resolver.datasource;
 
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.khasanof.core.config.RootDataSourceProperties;
+import org.khasanof.core.service.hikari.HikariDataSourceConfigurerService;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.khasanof.core.tenancy.core.model.TenantDataSource;
@@ -14,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see org.khasanof.core.tenancy.multi.resolver.datasource
  * @since 11/2/2024 3:42 PM
  */
+@Slf4j
 public class DataSourceResolverImpl implements DataSourceResolver {
 
     private final Map<Long, TenantDataSource> dataSources = new ConcurrentHashMap<>();
@@ -21,10 +26,14 @@ public class DataSourceResolverImpl implements DataSourceResolver {
 
     private final DataSourceProperties dataSourceProperties;
     private final DataSourceUrlResolver dataSourceUrlResolver;
+    private final RootDataSourceProperties rootDataSourceProperties;
+    private final HikariDataSourceConfigurerService hikariDataSourceConfigurerService;
 
-    public DataSourceResolverImpl(DataSourceProperties dataSourceProperties, DataSourceUrlResolver dataSourceUrlResolver) {
+    public DataSourceResolverImpl(DataSourceProperties dataSourceProperties, DataSourceUrlResolver dataSourceUrlResolver, RootDataSourceProperties rootDataSourceProperties, HikariDataSourceConfigurerService hikariDataSourceConfigurerService) {
         this.dataSourceProperties = dataSourceProperties;
         this.dataSourceUrlResolver = dataSourceUrlResolver;
+        this.rootDataSourceProperties = rootDataSourceProperties;
+        this.hikariDataSourceConfigurerService = hikariDataSourceConfigurerService;
     }
 
     /**
@@ -34,7 +43,9 @@ public class DataSourceResolverImpl implements DataSourceResolver {
      */
     @Override
     public TenantDataSource getOrCreate(Long tenantIdentifier) {
+        log.debug("Request method get or create tenant datasource: {}", tenantIdentifier);
         if (!dataSources.containsKey(tenantIdentifier)) {
+            log.debug("Datasource not found by {}", tenantIdentifier);
             dataSources.put(tenantIdentifier, create(tenantIdentifier));
         }
         return dataSources.get(tenantIdentifier);
@@ -56,6 +67,9 @@ public class DataSourceResolverImpl implements DataSourceResolver {
         dataSourceBuilder.driverClassName(dataSourceProperties.getDriverClassName());
 
         DataSource dataSource = dataSourceBuilder.build();
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            hikariDataSourceConfigurerService.configurer(hikariDataSource, rootDataSourceProperties.getTenantProperties());
+        }
 
         TenantDataSource tenantDataSource = new TenantDataSource(false, dataSource);
         dataSources.put(tenantIdentifier, tenantDataSource);

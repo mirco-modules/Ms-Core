@@ -1,9 +1,11 @@
 package org.khasanof.core.migration.core;
 
+import org.khasanof.core.config.RootDataSourceProperties;
 import org.khasanof.core.migration.core.database.DatabaseCreatorService;
 import org.khasanof.core.migration.core.database.DatabaseCreatorServiceImpl;
 import org.khasanof.core.migration.core.database.strategy.manager.DatabaseCreatorStrategyManager;
 import org.khasanof.core.migration.core.database.strategy.manager.DatabaseCreatorStrategyManagerImpl;
+import org.khasanof.core.service.hikari.HikariDataSourceConfigurerService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +31,8 @@ public class AutoCreateDatabaseConfiguration {
      * @return
      */
     @Bean
-    public DatabaseCreatorService databaseCreatorService() {
-        return new DatabaseCreatorServiceImpl(databaseCreatorStrategyManager());
+    public DatabaseCreatorService databaseCreatorService(RootDataSourceProperties rootDataSourceProperties, HikariDataSourceConfigurerService hikariDataSourceConfigurerService) {
+        return new DatabaseCreatorServiceImpl(rootDataSourceProperties, databaseCreatorStrategyManager(), hikariDataSourceConfigurerService);
     }
 
     /**

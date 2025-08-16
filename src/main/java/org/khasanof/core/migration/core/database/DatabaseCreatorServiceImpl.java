@@ -1,6 +1,9 @@
 package org.khasanof.core.migration.core.database;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.khasanof.core.config.RootDataSourceProperties;
+import org.khasanof.core.service.hikari.HikariDataSourceConfigurerService;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,10 +27,14 @@ import static org.khasanof.core.migration.core.database.helper.DatabaseUrlHelper
 @Service
 public class DatabaseCreatorServiceImpl implements DatabaseCreatorService {
 
+    private final RootDataSourceProperties rootDataSourceProperties;
     private final DatabaseCreatorStrategyManager databaseCreatorStrategyManager;
+    private final HikariDataSourceConfigurerService hikariDataSourceConfigurerService;
 
-    public DatabaseCreatorServiceImpl(DatabaseCreatorStrategyManager databaseCreatorStrategyManager) {
+    public DatabaseCreatorServiceImpl(RootDataSourceProperties rootDataSourceProperties, DatabaseCreatorStrategyManager databaseCreatorStrategyManager, HikariDataSourceConfigurerService hikariDataSourceConfigurerService) {
+        this.rootDataSourceProperties = rootDataSourceProperties;
         this.databaseCreatorStrategyManager = databaseCreatorStrategyManager;
+        this.hikariDataSourceConfigurerService = hikariDataSourceConfigurerService;
     }
 
     /**
@@ -56,12 +63,17 @@ public class DatabaseCreatorServiceImpl implements DatabaseCreatorService {
         dataSourceBuilder.url(replacedJdbcUrl);
 
         DataSource dataSource = dataSourceBuilder.build();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        if (dataSource instanceof HikariDataSource hikariDataSource) {
+            hikariDataSourceConfigurerService.configurer(hikariDataSource, rootDataSourceProperties.getTenantProperties());
+        }
 
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         if (!databaseCreatorStrategy.ignoreCheckExistDatabaseQuery() && checkExistDatabase(extractDatabaseName, jdbcTemplate, databaseCreatorStrategy)) {
             log.debug("Database already created: {}", extractDatabaseName);
             return;
         }
+
+        log.debug("Database not created: {}", extractDatabaseName);
         createDatabase(extractDatabaseName, jdbcTemplate, databaseCreatorStrategy);
     }
 
