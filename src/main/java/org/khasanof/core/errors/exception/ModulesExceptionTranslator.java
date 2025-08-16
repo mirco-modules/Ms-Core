@@ -1,6 +1,7 @@
 package org.khasanof.core.errors.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -37,6 +38,7 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.findMerg
  * Controller advice to translate the server side exceptions to client-friendly json structures.
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
  */
+@Slf4j
 @ControllerAdvice
 public class ModulesExceptionTranslator extends ResponseEntityExceptionHandler {
 
@@ -56,6 +58,7 @@ public class ModulesExceptionTranslator extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> handleAnyException(Throwable ex, NativeWebRequest request) {
+        log.error(ex.getMessage(), ex);
         ProblemDetailWithCause pdCause = wrapAndCustomizeProblem(ex, request);
         return handleExceptionInternal((Exception) ex, pdCause, buildHeaders(ex), HttpStatusCode.valueOf(pdCause.getStatus()), request);
     }
@@ -236,6 +239,6 @@ public class ModulesExceptionTranslator extends ResponseEntityExceptionHandler {
 
     private boolean containsPackageName(String message) {
         // This list is for sure not complete
-        return StringUtils.containsAny(message, "org.", "java.", "net.", "jakarta.", "javax.", "com.", "io.", "de.", "org.khasanof.core.widgets");
+        return StringUtils.containsAny(message, "org.", "java.", "net.", "jakarta.", "javax.", "com.", "io.", "de.");
     }
 }
