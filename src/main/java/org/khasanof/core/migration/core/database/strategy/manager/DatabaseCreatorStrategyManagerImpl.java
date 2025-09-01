@@ -1,5 +1,6 @@
 package org.khasanof.core.migration.core.database.strategy.manager;
 
+import org.khasanof.core.domain.enumeration.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,17 @@ public class DatabaseCreatorStrategyManagerImpl implements DatabaseCreatorStrate
         return strategies.stream()
                 .filter(databaseCreatorStrategy -> databaseCreatorStrategy.isSupport(jdbcUrl))
                 .findFirst();
+    }
+
+    /**
+     *
+     * @param jdbcUrl
+     * @return
+     */
+    @Override
+    public Optional<DatabaseType> getStrategyType(String jdbcUrl) {
+        return getStrategy(jdbcUrl)
+                .map(DatabaseCreatorStrategy::getType);
     }
 
     /**

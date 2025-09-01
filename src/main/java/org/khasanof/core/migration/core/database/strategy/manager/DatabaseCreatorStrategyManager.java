@@ -1,5 +1,6 @@
 package org.khasanof.core.migration.core.database.strategy.manager;
 
+import org.khasanof.core.domain.enumeration.DatabaseType;
 import org.khasanof.core.migration.core.database.strategy.DatabaseCreatorStrategy;
 
 import java.util.Optional;
@@ -17,4 +18,11 @@ public interface DatabaseCreatorStrategyManager {
      * @return
      */
     Optional<DatabaseCreatorStrategy> getStrategy(String jdbcUrl);
+
+    /**
+     *
+     * @param jdbcUrl
+     * @return
+     */
+    Optional<DatabaseType> getStrategyType(String jdbcUrl);
 }

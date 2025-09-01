@@ -7,6 +7,7 @@ import org.khasanof.core.annotation.Common;
 import org.khasanof.core.annotation.Tenancy;
 import org.khasanof.core.config.RootDataSourceProperties;
 import org.khasanof.core.migration.core.database.DatabaseCreatorService;
+import org.khasanof.core.migration.core.database.strategy.manager.DatabaseCreatorStrategyManager;
 import org.khasanof.core.service.hikari.HikariDataSourceConfigurerService;
 import org.khasanof.core.service.scanner.DynamicClassScanningComponentProvider;
 import org.khasanof.core.tenancy.multi.condition.MultiTenantCondition;
@@ -57,6 +58,7 @@ public class MultiTenantDatabaseConfiguration {
     private final DatabaseNameHelper databaseNameHelper;
     private final DatabaseCreatorService databaseCreatorService;
     private final RootDataSourceProperties rootDataSourceProperties;
+    private final DatabaseCreatorStrategyManager databaseCreatorStrategyManager;
     private final HikariDataSourceConfigurerService hikariDataSourceConfigurerService;
 
     /**
@@ -74,7 +76,7 @@ public class MultiTenantDatabaseConfiguration {
      */
     @Bean
     public LiquibaseService liquibaseService() {
-        return new LiquibaseServiceImpl(dataSourceResolver(), liquibaseChangelogResolver());
+        return new LiquibaseServiceImpl(dataSourceResolver(), rootDataSourceProperties, liquibaseChangelogResolver(), databaseCreatorStrategyManager);
     }
 
     /**

@@ -9,9 +9,13 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.khasanof.core.config.RootDataSourceProperties;
+import org.khasanof.core.domain.enumeration.DatabaseType;
+import org.khasanof.core.migration.core.database.strategy.manager.DatabaseCreatorStrategyManager;
 import org.khasanof.core.tenancy.core.model.TenantDataSource;
 import org.khasanof.core.tenancy.multi.liquibase.resolver.LiquibaseChangelogResolver;
 import org.khasanof.core.tenancy.multi.resolver.datasource.DataSourceResolver;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -25,14 +29,20 @@ import java.util.Map;
  */
 public class LiquibaseServiceImpl implements LiquibaseService {
 
-    public static final String DEFAULT_SCHEMA_NAME = "public";
-
     private final DataSourceResolver dataSourceResolver;
+    private final RootDataSourceProperties rootDataSourceProperties;
     private final LiquibaseChangelogResolver liquibaseChangelogResolver;
+    private final DatabaseCreatorStrategyManager databaseCreatorStrategyManager;
 
-    public LiquibaseServiceImpl(DataSourceResolver dataSourceResolver, LiquibaseChangelogResolver liquibaseChangelogResolver) {
+    public LiquibaseServiceImpl(DataSourceResolver dataSourceResolver,
+                                RootDataSourceProperties rootDataSourceProperties,
+                                LiquibaseChangelogResolver liquibaseChangelogResolver,
+                                DatabaseCreatorStrategyManager databaseCreatorStrategyManager
+    ) {
         this.dataSourceResolver = dataSourceResolver;
+        this.rootDataSourceProperties = rootDataSourceProperties;
         this.liquibaseChangelogResolver = liquibaseChangelogResolver;
+        this.databaseCreatorStrategyManager = databaseCreatorStrategyManager;
     }
 
     /**
@@ -82,12 +92,17 @@ public class LiquibaseServiceImpl implements LiquibaseService {
      */
     private Database getDatabase(Long tenantIdentifier) throws SQLException, DatabaseException {
         Connection connection = getConnection(tenantIdentifier);
-        connection.prepareStatement(String.format("SET search_path TO '%s'", DEFAULT_SCHEMA_NAME)).execute();
-
         Database database = DatabaseFactory.getInstance()
                 .findCorrectDatabaseImplementation(new JdbcConnection(connection));
 
-        database.setDefaultSchemaName(DEFAULT_SCHEMA_NAME);
+        DataSourceProperties tenant = rootDataSourceProperties.getTenant();
+        DatabaseType databaseType = databaseCreatorStrategyManager.getStrategyType(tenant.getUrl())
+                .orElseThrow(() -> new RuntimeException("DatabaseType not found"));
+
+        if (databaseType.isHasSchema()) {
+            database.setDefaultSchemaName(databaseType.getDefaultSchemaName());
+        }
+
         return database;
     }
 

@@ -11,7 +11,7 @@
     -->
     <changeSet id="20241120071502-3" author="jhipster">
         <createTable tableName="numbers">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="next_number" type="bigint">

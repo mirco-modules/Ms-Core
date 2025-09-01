@@ -13,7 +13,10 @@ import org.khasanof.core.migration.core.database.strategy.DatabaseCreatorStrateg
 import org.khasanof.core.migration.core.database.strategy.manager.DatabaseCreatorStrategyManager;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 import static org.khasanof.core.migration.core.database.helper.DatabaseUrlHelper.replaceDatabaseName;
@@ -67,14 +70,13 @@ public class DatabaseCreatorServiceImpl implements DatabaseCreatorService {
             hikariDataSourceConfigurerService.configurer(hikariDataSource, rootDataSourceProperties.getTenantProperties());
         }
 
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        if (!databaseCreatorStrategy.ignoreCheckExistDatabaseQuery() && checkExistDatabase(extractDatabaseName, jdbcTemplate, databaseCreatorStrategy)) {
+        if (!databaseCreatorStrategy.ignoreCheckExistDatabaseQuery() && checkExistDatabaseWithDatasource(extractDatabaseName, dataSource, databaseCreatorStrategy)) {
             log.debug("Database already created: {}", extractDatabaseName);
             return;
         }
 
         log.debug("Database not created: {}", extractDatabaseName);
-        createDatabase(extractDatabaseName, jdbcTemplate, databaseCreatorStrategy);
+        createDatabaseWithDatasource(extractDatabaseName, dataSource, databaseCreatorStrategy);
     }
 
     /**
@@ -83,7 +85,7 @@ public class DatabaseCreatorServiceImpl implements DatabaseCreatorService {
      * @param jdbcTemplate
      * @return
      */
-    private Boolean checkExistDatabase(String databaseName, JdbcTemplate jdbcTemplate, DatabaseCreatorStrategy databaseCreatorStrategy) {
+    private Boolean checkExistDatabaseWithJdbcTemplate(String databaseName, JdbcTemplate jdbcTemplate, DatabaseCreatorStrategy databaseCreatorStrategy) {
         log.debug("Started checking database: {}", databaseName);
         return jdbcTemplate.query(databaseCreatorStrategy.checkExistDatabaseQuery(databaseName), ResultSet::next);
     }
@@ -91,10 +93,54 @@ public class DatabaseCreatorServiceImpl implements DatabaseCreatorService {
     /**
      *
      * @param databaseName
+     * @param dataSource
+     * @param databaseCreatorStrategy
+     * @return
+     */
+    private Boolean checkExistDatabaseWithDatasource(String databaseName, DataSource dataSource, DatabaseCreatorStrategy databaseCreatorStrategy) {
+        log.debug("Started checking database: {}", databaseName);
+        String query = databaseCreatorStrategy.checkExistDatabaseQuery(databaseName);
+        try {
+            Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            return resultSet.next();
+        } catch (SQLException e) {
+            log.warn("Database check exist query execution failed: {}", databaseName);
+            e.fillInStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param databaseName
      * @param jdbcTemplate
      */
-    private void createDatabase(String databaseName, JdbcTemplate jdbcTemplate, DatabaseCreatorStrategy databaseCreatorStrategy) {
+    private void createDatabaseWithJdbcTemplate(String databaseName, JdbcTemplate jdbcTemplate, DatabaseCreatorStrategy databaseCreatorStrategy) {
         log.debug("Started creating database: {}", databaseName);
         jdbcTemplate.execute(databaseCreatorStrategy.createDatabaseQuery(databaseName));
+    }
+
+    /**
+     *
+     * @param databaseName
+     * @param dataSource
+     * @param databaseCreatorStrategy
+     */
+    private void createDatabaseWithDatasource(String databaseName, DataSource dataSource, DatabaseCreatorStrategy databaseCreatorStrategy) {
+        log.debug("Started creating database: {}", databaseName);
+        String query = databaseCreatorStrategy.createDatabaseQuery(databaseName);
+        try {
+            Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            boolean executed = statement.execute(query);
+            if (!executed) {
+                log.warn("Database not created: {}", databaseName);
+            }
+        } catch (SQLException e) {
+            e.fillInStackTrace();
+            log.warn("Database create query execution failed: {}", databaseName);
+        }
     }
 }

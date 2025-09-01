@@ -11,7 +11,7 @@
     -->
     <changeSet id="20241112101703-1" author="jhipster">
         <createTable tableName="variables">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
@@ -25,6 +25,6 @@
     </changeSet>
 
     <changeSet id="20220103101703-1" author="Nurislom">
-        <renameColumn tableName="variables" oldColumnName="value" newColumnName="ent_value"/>
+        <renameColumn tableName="variables" columnDataType="varchar(255)" oldColumnName="value" newColumnName="ent_value"/>
     </changeSet>
 </databaseChangeLog>
